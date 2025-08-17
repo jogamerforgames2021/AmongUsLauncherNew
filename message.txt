@@ -1,1 +1,6 @@
-Have a nice day everyone
+⚠️ IMPORTANT WARNING ⚠️
+Do NOT use the launcher’s uninstall option.
+
+If you uninstall Among Us through the launcher, it will delete the entire folder where the game is installed — not just the game files. This could cause you to lose important files if you installed it in a main folder.
+
+Please uninstall the game manually until the next update fixes this issue.
