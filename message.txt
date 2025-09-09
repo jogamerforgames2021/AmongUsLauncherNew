@@ -1,6 +1,10 @@
-⚠️ IMPORTANT WARNING ⚠️
-Do NOT use the launcher’s uninstall option.
+🚨 Among Us v17.0.0 Just Dropped 🚨  
+Our current build (16.1.0) is outdated update in progress.  
+`ETA: 1–10 days`
 
-If you uninstall Among Us through the launcher, it will delete the entire folder where the game is installed — not just the game files. This could cause you to lose important files if you installed it in a main folder.
+⚠️ IMPORTANT WARNING ⚠️  
+Do NOT use the launcher’s uninstall option.  
+Uninstalling from the launcher will remove the entire folder where the game is installed, not just the game files.  
+If your game is in a main folder, you could lose important files.  
 
-Please uninstall the game manually until the next update fixes this issue.
+👉 Please uninstall the game manually until the next update fixes this issue.
