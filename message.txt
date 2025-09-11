@@ -1,7 +1,3 @@
-🚨 Among Us v17.0.0 Just Dropped 🚨  
-Our current build (16.1.0) is outdated update in progress.  
-`ETA: 1–10 days`
-
 ⚠️ IMPORTANT WARNING ⚠️  
 Do NOT use the launcher’s uninstall option.  
 Uninstalling from the launcher will remove the entire folder where the game is installed, not just the game files.  
