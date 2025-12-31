@@ -1,5 +1,11 @@
 <node>
   <patch>
+    <Title>Website Rewrite</Title>
+    <Text>The website looks so freaking cool now!
+    and the help page actually displays useful stuff</Text>
+    <Link>https://jogamerforgames2021.github.io/AmongUsShadowSlime/MainPage.html</Link>
+  </patch>
+  <patch>
     <Title>Launcher 1.3 UPDATE</Title>
     <Text>Long awaited UI Update is finally here!
     Added UI and improved the app and added alot of stuff! including this news screen!
