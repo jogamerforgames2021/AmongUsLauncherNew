@@ -1,0 +1,18 @@
+[
+  {
+    "id": "aunlocker",
+    "name": "AUnlocker",
+    "author": "astra1dev",
+    "description": "Unlock all cosmetics, remove chat limits, and more. Safe to use on official servers.",
+    "tags": ["cosmetics", "chat", "quality of life"],
+    "warning": null,
+    "source": "github_release",
+    "repo": "astra1dev/AUnlocker",
+    "asset_pattern": ".dll",
+    "install_path": "BepInEx/plugins",
+    "filename": "AUnlocker.dll",
+    "requires_bepinex": true,
+    "verified": true,
+    "color": "#7b61ff"
+  }
+]
