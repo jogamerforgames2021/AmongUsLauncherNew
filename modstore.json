@@ -8,7 +8,16 @@
     "warning": null,
     "risk_level": "safe",
     "releases": [
-      { "game_version": "17.x", "url": "https://github.com/astra1dev/AUnlocker/releases/latest/download/AUnlocker.dll" }
+      { "game_version": "17.3I", "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.3.0/AUnlocker_v1.3.0_Steam_Itch.zip" },
+      { "game_version": "17.2.2I", "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.3.0/AUnlocker_v1.3.0_Steam_Itch.zip" },
+      { "game_version": "17.2.1I", "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.3.0/AUnlocker_v1.3.0_Steam_Itch.zip" },
+      { "game_version": "17.1.0I", "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.2.2/AUnlocker_v1.2.2_Steam_Itch.zip" },
+      { "game_version": "17.0.1I", "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.2.2/AUnlocker_v1.2.2_Steam_Itch.zip" },
+      { "game_version": "17.0.0I", "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.2.2/AUnlocker_v1.2.2_Steam_Itch.zip" },
+      { "game_version": "16.1.0I", "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.2.1/AUnlocker_v1.2.1_Steam_Itch.zip" },
+      { "game_version": "16.0.5I", "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.2.0/AUnlocker_v1.2.0_Steam_Itch.zip" },
+      { "game_version": "16.0.2I", "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.1.8/AUnlocker_v1.1.8_Steam_Epic_Itch.zip" },
+      { "game_version": "16.0.0I", "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.1.8/AUnlocker_v1.1.8_Steam_Epic_Itch.zip" }
     ],
     "install_path": "BepInEx/plugins",
     "filename": "AUnlocker.dll",
