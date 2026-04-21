@@ -24,5 +24,37 @@
     "requires_bepinex": true,
     "verified": true,
     "color": "#7b61ff"
+  },
+  {
+    "id": "malummenu",
+    "name": "MalumMenu",
+    "author": "scp222thj",
+    "description": "A cheat menu with ESP, always impostor, speed control, and lots of other modules. Toggle the menu in-game with the DELETE key. For private lobbies only.",
+    "tags": ["cheat", "client-side", "menu", "esp"],
+    "warning": "This mod is a cheat menu. Using it on official servers may get your account banned. Only use it in private lobbies with friends who know about it.",
+    "risk_level": "account_risk",
+    "update_chain": false,
+    "github_repo": "scp222thj/MalumMenu",
+    "install_path": "BepInEx/plugins",
+    "filename": "MalumMenu.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#ff4d6a"
+  },
+  {
+    "id": "amongusrevamped",
+    "name": "AmongUsRevamped",
+    "author": "ApeMV",
+    "description": "A Host-only mod built to give the best possible Among Us experience without requiring modded protocol. Only the host needs it! ( everyone else joins with vanilla Among Us. )",
+    "tags": ["host-only", "roles", "game modes", "vanilla-friendly"],
+    "warning": "Only the host needs this installed. Other players join with their normal unmodded game.",
+    "risk_level": "caution",
+    "update_chain": false,
+    "github_repo": "ApeMV/AmongUsRevamped",
+    "install_path": "BepInEx/plugins",
+    "filename": "AmongUsRevamped.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#22c55e"
   }
 ]
