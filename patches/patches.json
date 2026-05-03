@@ -1,5 +1,6 @@
 {
   "17.3I": [
-    { "id": "Fix testing", "order": 1, "url": "patches/17.3I/PatchNoOne.zip" }
+    { "id": "Fix testing", "order": 1, "url": "patches/17.3I/PatchNoOne.zip" },
+    { "id": "New Skins", "order": 2, "url": "patches/17.3I/NewSkins.zip" }
   ]
 }
