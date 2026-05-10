@@ -4,20 +4,54 @@
     "name": "AUnlocker",
     "author": "astra1dev",
     "description": "Unlock all cosmetics, remove chat limits, and more. Safe to use on official servers.",
-    "tags": ["cosmetics", "chat", "quality of life"],
+    "tags": [
+      "cosmetics",
+      "chat",
+      "quality of life"
+    ],
     "warning": null,
     "risk_level": "safe",
     "releases": [
-      { "game_version": "17.3I",   "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.3.0/AUnlocker_v1.3.0.dll" },
-      { "game_version": "17.2.2I", "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.3.0/AUnlocker_v1.3.0.dll" },
-      { "game_version": "17.2.1I", "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.3.0/AUnlocker_v1.3.0.dll" },
-      { "game_version": "17.1.0I", "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.2.2/AUnlocker_v1.2.2.dll" },
-      { "game_version": "17.0.1I", "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.2.2/AUnlocker_v1.2.2.dll" },
-      { "game_version": "17.0.0I", "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.2.2/AUnlocker_v1.2.2.dll" },
-      { "game_version": "16.1.0I", "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.2.1/AUnlocker_v1.2.1.dll" },
-      { "game_version": "16.0.5I", "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.2.0/AUnlocker_v1.2.0.dll" },
-      { "game_version": "16.0.2I", "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.1.8/AUnlocker_v1.1.8.dll" },
-      { "game_version": "16.0.0I", "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.1.8/AUnlocker_v1.1.8.dll" }
+      {
+        "game_version": "17.3I",
+        "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.3.0/AUnlocker_v1.3.0.dll"
+      },
+      {
+        "game_version": "17.2.2I",
+        "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.3.0/AUnlocker_v1.3.0.dll"
+      },
+      {
+        "game_version": "17.2.1I",
+        "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.3.0/AUnlocker_v1.3.0.dll"
+      },
+      {
+        "game_version": "17.1.0I",
+        "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.2.2/AUnlocker_v1.2.2.dll"
+      },
+      {
+        "game_version": "17.0.1I",
+        "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.2.2/AUnlocker_v1.2.2.dll"
+      },
+      {
+        "game_version": "17.0.0I",
+        "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.2.2/AUnlocker_v1.2.2.dll"
+      },
+      {
+        "game_version": "16.1.0I",
+        "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.2.1/AUnlocker_v1.2.1.dll"
+      },
+      {
+        "game_version": "16.0.5I",
+        "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.2.0/AUnlocker_v1.2.0.dll"
+      },
+      {
+        "game_version": "16.0.2I",
+        "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.1.8/AUnlocker_v1.1.8.dll"
+      },
+      {
+        "game_version": "16.0.0I",
+        "url": "https://github.com/astra1dev/AUnlocker/releases/download/v1.1.8/AUnlocker_v1.1.8.dll"
+      }
     ],
     "install_path": "BepInEx/plugins",
     "filename": "AUnlocker.dll",
@@ -30,7 +64,12 @@
     "name": "MalumMenu",
     "author": "scp222thj",
     "description": "A cheat menu with ESP, always impostor, speed control, and lots of other modules. Toggle the menu in-game with the DELETE key. For private lobbies only.",
-    "tags": ["cheat", "client-side", "menu", "esp"],
+    "tags": [
+      "cheat",
+      "client-side",
+      "menu",
+      "esp"
+    ],
     "warning": "This mod is a cheat menu. Using it on official servers may get your account banned. Only use it in private lobbies with friends who know about it.",
     "risk_level": "account_risk",
     "releases": [],
@@ -47,7 +86,12 @@
     "name": "AmongUsRevamped",
     "author": "ApeMV",
     "description": "A Host-only mod built to give the best possible Among Us experience without requiring modded protocol. Only the host needs it! ( everyone else joins with vanilla Among Us. )",
-    "tags": ["host-only", "roles", "game modes", "vanilla-friendly"],
+    "tags": [
+      "host-only",
+      "roles",
+      "game modes",
+      "vanilla-friendly"
+    ],
     "warning": "Only the host needs this installed. Other players join with their normal unmodded game.",
     "risk_level": "caution",
     "releases": [],
@@ -58,5 +102,806 @@
     "requires_bepinex": true,
     "verified": false,
     "color": "#22c55e"
+  },
+  {
+    "id": "tohe",
+    "name": "Town of Host Enhanced",
+    "author": "EnhancedNetwork",
+    "description": "A host-only modpack for Among Us with enhanced features.",
+    "tags": [
+      "host-only",
+      "roles",
+      "game modes"
+    ],
+    "warning": "Only the host needs this installed. Other players join with their normal unmodded game.",
+    "risk_level": "caution",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "EnhancedNetwork/TownofHost-Enhanced",
+    "install_path": "BepInEx/plugins",
+    "filename": "TOHE.dll",
+    "requires_bepinex": true,
+    "verified": true,
+    "color": "#22c55e"
+  },
+  {
+    "id": "toho",
+    "name": "Town of Host Optimized",
+    "author": "Limeau",
+    "description": "A Host-Only mod with hundreds of new roles, multiple game modes, and many game optimizations.",
+    "tags": [
+      "host-only",
+      "roles",
+      "game modes"
+    ],
+    "warning": "Only the host needs this installed. Other players join with their normal unmodded game.",
+    "risk_level": "caution",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "Limeau/TownofHost-Optimized",
+    "install_path": "BepInEx/plugins",
+    "filename": "TOHO.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#22c55e"
+  },
+  {
+    "id": "townofus",
+    "name": "Town of Us Mira",
+    "author": "AU-Avengers",
+    "description": "Town of Us Reactivated, but cleaner using MiraAPI with many improvements!",
+    "tags": [
+      "roles",
+      "game modes",
+      "client mod"
+    ],
+    "warning": null,
+    "risk_level": "caution",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "AU-Avengers/TOU-Mira",
+    "install_path": "BepInEx/plugins",
+    "filename": "TownOfUsMira.dll",
+    "requires_bepinex": true,
+    "verified": true,
+    "color": "#3b82f6"
+  },
+  {
+    "id": "chaostokens",
+    "name": "ChaosTokens",
+    "author": "xChipseq",
+    "description": "Addon for Town of Us Mira that adds Town of Salem 2 inspired Chaos Tokens.",
+    "tags": [
+      "roles",
+      "addon",
+      "town of us"
+    ],
+    "warning": null,
+    "risk_level": "caution",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "xChipseq/ChaosTokens",
+    "install_path": "BepInEx/plugins",
+    "filename": "ChaosTokens.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#3b82f6"
+  },
+  {
+    "id": "bettercrewlink",
+    "name": "Better CrewLink",
+    "author": "OhMyGuus",
+    "description": "Voice proximity chat for Among Us. Run it alongside the game \u2014 all players need it.",
+    "tags": [
+      "utility",
+      "voice chat",
+      "proximity chat"
+    ],
+    "warning": "This is a standalone application, not a BepInEx plugin. Run it separately alongside Among Us.",
+    "risk_level": "safe",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "OhMyGuus/BetterCrewLink",
+    "install_path": "BepInEx/plugins",
+    "filename": "Better-CrewLink.exe",
+    "requires_bepinex": true,
+    "verified": true,
+    "color": "#7b61ff"
+  },
+  {
+    "id": "better-bcl",
+    "name": "Better-BCL",
+    "author": "rewalo",
+    "description": "A fork of Better CrewLink with extra features.",
+    "tags": [
+      "utility",
+      "voice chat",
+      "proximity chat"
+    ],
+    "warning": "Standalone application \u2014 run it separately alongside Among Us.",
+    "risk_level": "safe",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "rewalo/BetterCrewLink",
+    "install_path": "BepInEx/plugins",
+    "filename": "Better-CrewLink.exe",
+    "requires_bepinex": true,
+    "verified": true,
+    "color": "#7b61ff"
+  },
+  {
+    "id": "theotherroles",
+    "name": "The Other Roles",
+    "author": "TheOtherRolesAU",
+    "description": "Adds many new roles, settings, and custom hats to Among Us.",
+    "tags": [
+      "roles",
+      "game modes",
+      "hats"
+    ],
+    "warning": "Requires a specific older version of Among Us (v15.11.0). Will not work on the current version.",
+    "risk_level": "caution",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "TheOtherRolesAU/TheOtherRoles",
+    "install_path": "BepInEx/plugins",
+    "filename": "TheOtherRoles.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#3b82f6"
+  },
+  {
+    "id": "alltheroles",
+    "name": "All The Roles",
+    "author": "Zeo666",
+    "description": "Adds many new roles, modifiers, game modes, map settings, hats and more.",
+    "tags": [
+      "roles",
+      "game modes",
+      "modifiers"
+    ],
+    "warning": "Requires a specific older version of Among Us (v16.0.5). Will not work on the current version.",
+    "risk_level": "caution",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "Zeo666/AllTheRoles",
+    "install_path": "BepInEx/plugins",
+    "filename": "AllTheRoles.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#3b82f6"
+  },
+  {
+    "id": "launchpadreloaded",
+    "name": "Launchpad: Reloaded",
+    "author": "All-Of-Us-Mods",
+    "description": "A vanilla-oriented fun and unique Among Us client mod.",
+    "tags": [
+      "roles",
+      "game modes",
+      "client mod"
+    ],
+    "warning": null,
+    "risk_level": "caution",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "All-Of-Us-Mods/LaunchpadReloaded",
+    "install_path": "BepInEx/plugins",
+    "filename": "LaunchpadReloaded.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#3b82f6"
+  },
+  {
+    "id": "reactor",
+    "name": "Reactor",
+    "author": "NuclearPowered",
+    "description": "Shared modding framework required by multiple mods.",
+    "tags": [
+      "dependency",
+      "framework"
+    ],
+    "warning": null,
+    "risk_level": "safe",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "NuclearPowered/Reactor",
+    "install_path": "BepInEx/plugins",
+    "filename": "Reactor.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#6b7280"
+  },
+  {
+    "id": "miraapi",
+    "name": "Mira API",
+    "author": "All-Of-Us-Mods",
+    "description": "Core API framework used by Mira-based mods.",
+    "tags": [
+      "dependency",
+      "framework"
+    ],
+    "warning": null,
+    "risk_level": "safe",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "All-Of-Us-Mods/MiraAPI",
+    "install_path": "BepInEx/plugins",
+    "filename": "MiraAPI.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#6b7280"
+  },
+  {
+    "id": "submerged",
+    "name": "Submerged",
+    "author": "SubmergedAmongUs",
+    "description": "Adds a brand new custom map to Among Us.",
+    "tags": [
+      "map",
+      "custom map"
+    ],
+    "warning": null,
+    "risk_level": "safe",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "SubmergedAmongUs/Submerged",
+    "install_path": "BepInEx/plugins",
+    "filename": "Submerged.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#14b8a6"
+  },
+  {
+    "id": "stellarrolesau",
+    "name": "StellarRoles",
+    "author": "Mr-Fluuff",
+    "description": "Adds new roles, modifiers, settings and custom cosmetics to Among Us.",
+    "tags": [
+      "roles",
+      "modifiers",
+      "cosmetics"
+    ],
+    "warning": "Requires a specific older version of Among Us (v16.0.2). Will not work on the current version.",
+    "risk_level": "caution",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "Mr-Fluuff/StellarRolesAU",
+    "install_path": "BepInEx/plugins",
+    "filename": "StellarRolesAU.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#3b82f6"
+  },
+  {
+    "id": "theotherrolesgmia",
+    "name": "The Other Roles GM IA",
+    "author": "dabao40",
+    "description": "A fork of The Other Roles with new roles, settings and custom hats (GM IA version).",
+    "tags": [
+      "roles",
+      "game modes",
+      "hats"
+    ],
+    "warning": "Requires a specific older version of Among Us (v16.0.2). Will not work on the current version.",
+    "risk_level": "caution",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "dabao40/TheOtherRolesGMIA",
+    "install_path": "BepInEx/plugins",
+    "filename": "TheOtherRolesGMIA.dll",
+    "requires_bepinex": true,
+    "verified": true,
+    "color": "#3b82f6"
+  },
+  {
+    "id": "lasmonjas",
+    "name": "Las Monjas",
+    "author": "KiraYamato94",
+    "description": "Adds new roles and features to Among Us.",
+    "tags": [
+      "roles",
+      "game modes"
+    ],
+    "warning": null,
+    "risk_level": "caution",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "KiraYamato94/LasMonjas",
+    "install_path": "BepInEx/plugins",
+    "filename": "LasMonjas.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#3b82f6"
+  },
+  {
+    "id": "smolmod",
+    "name": "SmolMod",
+    "author": "XtraCube",
+    "description": "Makes players the size of pets!",
+    "tags": [
+      "fun",
+      "cosmetics"
+    ],
+    "warning": null,
+    "risk_level": "safe",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "XtraCube/SmolMod",
+    "install_path": "BepInEx/plugins",
+    "filename": "SmolMod.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#f97316"
+  },
+  {
+    "id": "lotuscontinued",
+    "name": "Project Lotus: Continued",
+    "author": "Lotus-AU",
+    "description": "Unique and customizable host mod. Adds cosmetics, commands, hotkeys, and various options.",
+    "tags": [
+      "host-only",
+      "roles",
+      "game modes",
+      "cosmetics"
+    ],
+    "warning": "Only the host needs this installed. Other players join with their normal unmodded game.",
+    "risk_level": "caution",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "Lotus-AU/LotusContinued",
+    "install_path": "BepInEx/plugins",
+    "filename": "Lotus.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#22c55e"
+  },
+  {
+    "id": "prophunt",
+    "name": "PropHunt",
+    "author": "ugackMiner53",
+    "description": "Extends Hide and Seek into a new game mode \u2014 Prop Hunt!",
+    "tags": [
+      "fun",
+      "game modes",
+      "hide and seek"
+    ],
+    "warning": null,
+    "risk_level": "safe",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "ugackMiner53/PropHunt",
+    "install_path": "BepInEx/plugins",
+    "filename": "PropHunt.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#f97316"
+  },
+  {
+    "id": "levelimposter",
+    "name": "Level Imposter",
+    "author": "DigiWorm0",
+    "description": "Custom Among Us mapping studio \u2014 play community-made maps.",
+    "tags": [
+      "map",
+      "custom map"
+    ],
+    "warning": null,
+    "risk_level": "safe",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "DigiWorm0/LevelImposter",
+    "install_path": "BepInEx/plugins",
+    "filename": "LevelImposter.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#14b8a6"
+  },
+  {
+    "id": "yanplaroles",
+    "name": "yanplaRoles",
+    "author": "yanpla",
+    "description": "Introduces new roles and modifiers to Among Us.",
+    "tags": [
+      "roles",
+      "modifiers"
+    ],
+    "warning": null,
+    "risk_level": "caution",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "yanpla/yanplaRoles",
+    "install_path": "BepInEx/plugins",
+    "filename": "yanplaRoles.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#3b82f6"
+  },
+  {
+    "id": "newmod",
+    "name": "NewMod",
+    "author": "CallOfCreator",
+    "description": "Introduces new roles, unique abilities, and custom game modes.",
+    "tags": [
+      "roles",
+      "game modes"
+    ],
+    "warning": null,
+    "risk_level": "caution",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "CallOfCreator/NewMod",
+    "install_path": "BepInEx/plugins",
+    "filename": "NewMod.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#3b82f6"
+  },
+  {
+    "id": "endlesshostroles",
+    "name": "Endless Host Roles",
+    "author": "Gurge44",
+    "description": "The largest Among Us mod \u2014 packed with roles, settings, and features.",
+    "tags": [
+      "host-only",
+      "roles",
+      "game modes"
+    ],
+    "warning": "Only the host needs this installed. Other players join with their normal unmodded game.",
+    "risk_level": "caution",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "Gurge44/EndlessHostRoles",
+    "install_path": "BepInEx/plugins",
+    "filename": "EndlessHostRoles.dll",
+    "requires_bepinex": true,
+    "verified": true,
+    "color": "#22c55e"
+  },
+  {
+    "id": "cursedamongus",
+    "name": "Cursed Among Us",
+    "author": "Devs-Us",
+    "description": "Introduces challenging and chaotic modifications to gameplay.",
+    "tags": [
+      "fun",
+      "chaos"
+    ],
+    "warning": null,
+    "risk_level": "safe",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "Devs-Us/Cursed-Among-Us",
+    "install_path": "BepInEx/plugins",
+    "filename": "CursedAmongUs.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#f97316"
+  },
+  {
+    "id": "crowdedmod",
+    "name": "CrowdedMod",
+    "author": "CrowdedMods",
+    "description": "Allows more than 15 players to join a single Among Us lobby.",
+    "tags": [
+      "utility",
+      "multiplayer"
+    ],
+    "warning": null,
+    "risk_level": "safe",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "CrowdedMods/CrowdedMod",
+    "install_path": "BepInEx/plugins",
+    "filename": "CrowdedMod.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#7b61ff"
+  },
+  {
+    "id": "unlockdleks",
+    "name": "Unlock dleks ehT",
+    "author": "Tommy-XL",
+    "description": "Lets you play on the mirrored Skeld map (dleks ehT).",
+    "tags": [
+      "map",
+      "fun"
+    ],
+    "warning": null,
+    "risk_level": "safe",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "Tommy-XL/Unlock-dlekS-ehT",
+    "install_path": "BepInEx/plugins",
+    "filename": "UnlockDleks.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#14b8a6"
+  },
+  {
+    "id": "minimumlevel",
+    "name": "Minimum Level",
+    "author": "AtomicTyler1",
+    "description": "Automatically kicks/bans players who don't meet a minimum level requirement. Host only.",
+    "tags": [
+      "host-only",
+      "utility",
+      "moderation"
+    ],
+    "warning": "Host only.",
+    "risk_level": "caution",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "AtomicTyler1/MinimumLevel",
+    "install_path": "BepInEx/plugins",
+    "filename": "MinimumLevel.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#22c55e"
+  },
+  {
+    "id": "moregamemodes",
+    "name": "More Gamemodes",
+    "author": "Rabek009",
+    "description": "Host-only mod that adds new game modes and roles.",
+    "tags": [
+      "host-only",
+      "roles",
+      "game modes"
+    ],
+    "warning": "Only the host needs this installed. Other players join with their normal unmodded game.",
+    "risk_level": "caution",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "Rabek009/MoreGamemodes",
+    "install_path": "BepInEx/plugins",
+    "filename": "MoreGamemodes.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#22c55e"
+  },
+  {
+    "id": "impostor",
+    "name": "Impostor",
+    "author": "Impostor",
+    "description": "The first Among Us private server written in C#. Host your own private server.",
+    "tags": [
+      "utility",
+      "server",
+      "private server"
+    ],
+    "warning": "This is a server application, not a game mod. Run it on a machine to host private lobbies.",
+    "risk_level": "safe",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "Impostor/Impostor",
+    "install_path": "BepInEx/plugins",
+    "filename": "Impostor.Server.exe",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#7b61ff"
+  },
+  {
+    "id": "vanillaenhancements",
+    "name": "Vanilla Enhancements",
+    "author": "xChipseq",
+    "description": "Adds quality-of-life features to vanilla Among Us.",
+    "tags": [
+      "utility",
+      "quality of life"
+    ],
+    "warning": null,
+    "risk_level": "safe",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "xChipseq/VanillaEnhancements",
+    "install_path": "BepInEx/plugins",
+    "filename": "VanillaEnhancements.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#7b61ff"
+  },
+  {
+    "id": "modexplorer",
+    "name": "Mod Explorer",
+    "author": "xChipseq",
+    "description": "Adds an in-game list of all installed mods.",
+    "tags": [
+      "utility",
+      "quality of life"
+    ],
+    "warning": null,
+    "risk_level": "safe",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "xChipseq/ModExplorer",
+    "install_path": "BepInEx/plugins",
+    "filename": "ModExplorer.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#7b61ff"
+  },
+  {
+    "id": "extremeroles",
+    "name": "Extreme Roles",
+    "author": "yukieiji",
+    "description": "Adds 100+ roles, 1300+ options, and cosmetics to Among Us.",
+    "tags": [
+      "roles",
+      "game modes",
+      "cosmetics"
+    ],
+    "warning": null,
+    "risk_level": "caution",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "yukieiji/ExtremeRoles",
+    "install_path": "BepInEx/plugins",
+    "filename": "ExtremeRoles.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#3b82f6"
+  },
+  {
+    "id": "betteramongus",
+    "name": "Better Among Us",
+    "author": "D1GQ",
+    "description": "Client-side mod that enhances the Among Us experience.",
+    "tags": [
+      "client mod",
+      "quality of life"
+    ],
+    "warning": null,
+    "risk_level": "safe",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "D1GQ/BetterAmongUs-Public",
+    "install_path": "BepInEx/plugins",
+    "filename": "BetterAmongUs.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#7b61ff"
+  },
+  {
+    "id": "betterpolus",
+    "name": "Better Polus",
+    "author": "Brybry16",
+    "description": "Tweaks the Polus map for a more balanced experience.",
+    "tags": [
+      "map",
+      "quality of life"
+    ],
+    "warning": null,
+    "risk_level": "safe",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "Brybry16/BetterPolus",
+    "install_path": "BepInEx/plugins",
+    "filename": "BetterPolus.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#14b8a6"
+  },
+  {
+    "id": "syzyfowytownofus",
+    "name": "Syzyfowy Town Of Us",
+    "author": "LimeShep",
+    "description": "A Town Of Us fork that brings back classic roles alongside many new roles and modifiers.",
+    "tags": [
+      "roles",
+      "modifiers",
+      "game modes"
+    ],
+    "warning": null,
+    "risk_level": "caution",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "LimeShep/Town-Of-Us",
+    "install_path": "BepInEx/plugins",
+    "filename": "TownOfUs.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#3b82f6"
+  },
+  {
+    "id": "pokelobby",
+    "name": "Pok\u00e9 Lobby",
+    "author": "XtraCube",
+    "description": "Pok\u00e9mon-inspired lobby for Among Us.",
+    "tags": [
+      "fun",
+      "cosmetics"
+    ],
+    "warning": null,
+    "risk_level": "safe",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "XtraCube/PokemongUs",
+    "install_path": "BepInEx/plugins",
+    "filename": "PokeLobby.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#f97316"
+  },
+  {
+    "id": "supernewroles",
+    "name": "SuperNewRoles!!!!",
+    "author": "SuperNewRoles",
+    "description": "Adds various new modes and roles to Among Us.",
+    "tags": [
+      "roles",
+      "game modes"
+    ],
+    "warning": null,
+    "risk_level": "caution",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "SuperNewRoles/SuperNewRoles",
+    "install_path": "BepInEx/plugins",
+    "filename": "SuperNewRoles.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#3b82f6"
+  },
+  {
+    "id": "nebula",
+    "name": "Nebula On The Ship",
+    "author": "Dolly1016",
+    "description": "Unique and stylish roles, features, and countless color options.",
+    "tags": [
+      "roles",
+      "cosmetics",
+      "quality of life"
+    ],
+    "warning": null,
+    "risk_level": "caution",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "Dolly1016/Nebula",
+    "install_path": "BepInEx/plugins",
+    "filename": "Nebula.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#3b82f6"
+  },
+  {
+    "id": "aleludumod",
+    "name": "AleLuduMod",
+    "author": "townofus-pl",
+    "description": "Shows more than 15 players on the meeting screen, vitals, and Transporter/Glitch screen.",
+    "tags": [
+      "utility",
+      "multiplayer"
+    ],
+    "warning": null,
+    "risk_level": "safe",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "townofus-pl/AleLuduMod",
+    "install_path": "BepInEx/plugins",
+    "filename": "AleLuduMod.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#7b61ff"
+  },
+  {
+    "id": "emojisinthechat",
+    "name": "Emojis In The Chat",
+    "author": "WanderingPix",
+    "description": "Adds emojis to the Among Us chat!",
+    "tags": [
+      "fun",
+      "chat"
+    ],
+    "warning": null,
+    "risk_level": "safe",
+    "releases": [],
+    "update_chain": false,
+    "github_repo": "WanderingPix/Emojis-in-the-mogus-chat",
+    "install_path": "BepInEx/plugins",
+    "filename": "EmojisInTheChat.dll",
+    "requires_bepinex": true,
+    "verified": false,
+    "color": "#f97316"
   }
 ]
