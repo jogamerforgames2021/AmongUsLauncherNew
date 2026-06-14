@@ -103,7 +103,7 @@ class ItchFixerApp(tk.Tk):
                                       bg="#6193ff", fg="white", activebackground="#7367b1",
                                       activeforeground="white", font=("Sans Regular", 10, "bold"),
                                       relief="flat", height=1)
-        self.prefix_button.pack(padx=200, fill="x")
+        self.prefix_button.pack(padx=180, fill="x")
 
         self.login_button = tk.Button(self, state="disabled", text="Login with itch.io", command=self.start_login_thread,
                                       bg="#7b61ff", fg="white", activebackground="#5a44cc",
