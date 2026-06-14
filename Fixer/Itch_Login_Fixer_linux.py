@@ -69,31 +69,31 @@ class ItchFixerApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Itch Login Fixer")
-        self.geometry("550x550")
-        self.configure(bg="#060608")
+        self.geometry("450x550")
+        self.configure(bg="#242424")
         self.token = None
         self.pfp_image = None
 
         self.target_file = ""
         self.target_dir = ""
 
-        self.kicker = tk.Label(self, text="SHADOWSLIME AUTH", font=("Arial", 10), fg="#7b61ff", bg="#060608")
-        self.kicker.pack(pady=(25, 5))
+        self.kicker = tk.Label(self, text="SHADOWSLIME AUTH", font=("JetBrains Mono", 8), fg="#7b61ff", bg="#242424")
+        self.kicker.pack(pady=(25, 7))
 
-        self.version_label = tk.Label(self, text="v1.0 Linux | 6.14.2026", font=("Arial", 9), fg="#444", bg="#060608")
+        self.version_label = tk.Label(self, text="v1.0 | 5.9.2026", font=("JetBrains Mono", 7), fg="#444", bg="#242424")
         self.version_label.pack()
 
-        self.pfp_label = tk.Label(self, text="", bg="#060608")
+        self.pfp_label = tk.Label(self, text="", bg="#242424")
         self.pfp_label.pack(pady=20)
 
-        self.status_label = tk.Label(self, text="Not Logged In", font=("Arial", 22, "bold"), fg="white", bg="#060608")
+        self.status_label = tk.Label(self, text="Not Logged In", font=("Sans Regular", 18, "bold"), fg="white", bg="#242424")
         self.status_label.pack(pady=5)
 
-        self.action_text = tk.Label(self, text="Click login to fix the ownership error", font=("Arial", 13), fg="#888", bg="#060608")
+        self.action_text = tk.Label(self, text="Click login to fix the ownership error", font=("Sans Regular", 9), fg="#888", bg="#242424")
         self.action_text.pack(pady=5)
 
         self.prefix_label = tk.Label(self, text="Enter Proton/Wine prefix of your Among Us installation", 
-                                     font=("Sans Regular", 13, "bold"), fg="white", bg="#060608")
+                                     font=("Sans Regular", 10, "bold"), fg="white", bg="#242424")
         self.prefix_label.pack()
         
         self.prefix_entry = tk.Entry(self, font=("Sans Regular", 9), width="50")
@@ -101,18 +101,18 @@ class ItchFixerApp(tk.Tk):
 
         self.prefix_button = tk.Button(self, text="Set", command=self.set_wine_prefix,
                                       bg="#6193ff", fg="white", activebackground="#7367b1",
-                                      activeforeground="white", font=("Arial", 14, "bold"),
+                                      activeforeground="white", font=("Sans Regular", 10, "bold"),
                                       relief="flat", height=1)
-        self.prefix_button.pack(pady=10, padx=200, fill="x")
+        self.prefix_button.pack(padx=200, fill="x")
 
         self.login_button = tk.Button(self, state="disabled", text="Login with itch.io", command=self.start_login_thread,
                                       bg="#7b61ff", fg="white", activebackground="#5a44cc",
-                                      activeforeground="white", font=("Arial", 14, "bold"),
+                                      activeforeground="white", font=("Arial", 10, "bold"),
                                       relief="flat", height=2)
         self.login_button.pack(pady=25, padx=60, fill="x")
 
         self.warning_label = tk.Label(self, text="This is a temporary fix, don't expect it to always work.",
-                                      font=("Arial", 11, "italic"), fg="#555", bg="#060608")
+                                      font=("Arial", 8, "italic"), fg="#555", bg="#242424")
         self.warning_label.pack(side="bottom", pady=(0, 15))
 
         
