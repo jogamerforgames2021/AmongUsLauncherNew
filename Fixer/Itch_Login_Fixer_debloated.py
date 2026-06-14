@@ -72,7 +72,7 @@ class ItchFixerApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Itch Login Fixer")
-        self.geometry("450x550")
+        self.geometry("550x550")
         self.configure(bg="#060608")
         self.token = None
         self.pfp_image = None
@@ -119,11 +119,11 @@ class ItchFixerApp(tk.Tk):
                 data = response.json().get("user", {})
                 username = data.get("username", "User")
 
-                self.status_label.configure(text=f"Logged in as {username}", text_color="#4ade80")
-                self.action_text.configure(text="Login fixed! You can launch Among Us now. (you can also close this app)", text_color="#4ade80")
+                self.status_label.configure(text=f"Logged in as {username}", fg="#4ade80")
+                self.action_text.configure(text="Login fixed! You can launch Among Us now. (you can also close this app)", fg="#4ade80")
                 self.login_button.configure(text="Refresh Session")
             else:
-                self.status_label.configure(text="Session Expired", text_color="#ff4b4b")
+                self.status_label.configure(text="Session Expired", fg="#ff4b4b")
         except:
             pass
 
