@@ -1,0 +1,107 @@
+{
+  "CurrentRegionIdx": 2,
+  "Regions": [
+    {
+      "$type": "StaticHttpRegionInfo, Assembly-CSharp",
+      "Name": "Niko-NA",
+      "PingServer": "https://au-us.niko233.top",
+      "Servers": [
+        {
+          "Name": "http-1",
+          "Ip": "https://au-us.niko233.top",
+          "Port": 443,
+          "UseDtls": false,
+          "Players": 0,
+          "ConnectionFailures": 0
+        }
+      ],
+      "TargetServer": null,
+      "TranslateName": 1003
+    },
+    {
+      "$type": "StaticHttpRegionInfo, Assembly-CSharp",
+      "Name": "Niko-AS",
+      "PingServer": "https://au-as.niko233.top",
+      "Servers": [
+        {
+          "Name": "http-1",
+          "Ip": "https://au-as.niko233.top",
+          "Port": 443,
+          "UseDtls": false,
+          "Players": 0,
+          "ConnectionFailures": 0
+        }
+      ],
+      "TargetServer": null,
+      "TranslateName": 1003
+    },
+    {
+      "$type": "StaticHttpRegionInfo, Assembly-CSharp",
+      "Name": "Niko-EU",
+      "PingServer": "https://au-eu.niko233.top",
+      "Servers": [
+        {
+          "Name": "http-1",
+          "Ip": "https://au-eu.niko233.top",
+          "Port": 443,
+          "UseDtls": false,
+          "Players": 0,
+          "ConnectionFailures": 0
+        }
+      ],
+      "TargetServer": null,
+      "TranslateName": 1003
+    },
+    {
+      "$type": "StaticHttpRegionInfo, Assembly-CSharp",
+      "Name": "Modded EU (MEU)",
+      "PingServer": "https://au-eu.duikbo.at",
+      "Servers": [
+        {
+          "Name": "Http-1",
+          "Ip": "https://au-eu.duikbo.at",
+          "Port": 443,
+          "UseDtls": false,
+          "Players": 0,
+          "ConnectionFailures": 0
+        }
+      ],
+      "TargetServer": null,
+      "TranslateName": 1003
+    },
+    {
+      "$type": "StaticHttpRegionInfo, Assembly-CSharp",
+      "Name": "Modded NA (MNA)",
+      "PingServer": "https://aumods.org",
+      "Servers": [
+        {
+          "Name": "Http-1",
+          "Ip": "https://aumods.org",
+          "Port": 443,
+          "UseDtls": false,
+          "Players": 0,
+          "ConnectionFailures": 0
+        }
+      ],
+      "TargetServer": null,
+      "TranslateName": 1003
+    },
+    {
+      "$type": "StaticHttpRegionInfo, Assembly-CSharp",
+      "Name": "Modded Asia (MAS)",
+      "PingServer": "https://au-as.duikbo.at",
+      "Servers": [
+        {
+          "Name": "Http-1",
+          "Ip": "https://au-as.duikbo.at",
+          "Port": 443,
+          "UseDtls": false,
+          "Players": 0,
+          "ConnectionFailures": 0
+        }
+      ],
+      "TargetServer": null,
+      "TranslateName": 1003
+    }
+  ]
+}
