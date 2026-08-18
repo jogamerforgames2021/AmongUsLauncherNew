@@ -1,8 +1,12 @@
 {
   "versions": [
     {
+      "version": "18I",
+      "link": "https://github.com/astra1dev/AUnlocker/releases/download/v1.3.1/AUnlocker_v1.3.1_Steam_Itch.zip"
+    },
+    {
       "version": "17.4I",
-      "link": "https://github.com/astra1dev/AUnlocker/releases/download/v1.3.0/AUnlocker_v1.3.0_Steam_Itch.zip"
+      "link": "https://github.com/astra1dev/AUnlocker/releases/download/v1.3.1/AUnlocker_v1.3.1_Steam_Itch.zip"
     },
     {
       "version": "17.3I",
