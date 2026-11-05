@@ -254,8 +254,9 @@ class ItchFixerApp(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.title("Itch Login Fixer")
-        self.geometry("520x640")
-        self.minsize(520, 560)
+        sh = self.winfo_screenheight()
+        self.geometry(f"520x{min(620, sh - 84)}")
+        self.minsize(500, 500)
         ctk.set_appearance_mode("dark")
 
         self.purple = "#7b61ff"
@@ -301,67 +302,73 @@ class ItchFixerApp(ctk.CTk):
         self.update_label.pack(pady=(6, 0))
 
     def build_profile(self):
-        self.pfp_label = ctk.CTkLabel(self.container, text="", width=120, height=120)
-        self.pfp_label.pack(pady=(12, 6))
+        row = ctk.CTkFrame(self.container, fg_color="transparent")
+        row.pack(fill="x", pady=(8, 2))
 
-        self.status_label = ctk.CTkLabel(self.container, text="Not Logged In",
-                                         font=("Arial", 22, "bold"))
-        self.status_label.pack(pady=(2, 2))
+        self.pfp_label = ctk.CTkLabel(row, text="", width=80, height=80)
+        self.pfp_label.pack(side="left", padx=(16, 12))
 
-        self.au_label = ctk.CTkLabel(self.container, text="", font=("Consolas", 13),
+        info = ctk.CTkFrame(row, fg_color="transparent")
+        info.pack(side="left", fill="x", expand=True)
+
+        self.status_label = ctk.CTkLabel(info, text="Not Logged In",
+                                         font=("Arial", 18, "bold"))
+        self.status_label.pack(anchor="w")
+
+        self.au_label = ctk.CTkLabel(info, text="", font=("Consolas", 12),
                                      text_color="#61a8ff")
-        self.au_label.pack()
+        self.au_label.pack(anchor="w")
+
+        self.merged_label = ctk.CTkLabel(info, text="", font=("Arial", 11),
+                                         text_color="#59d499", wraplength=340, justify="left")
+        self.merged_label.pack(anchor="w")
 
         self.action_text = ctk.CTkLabel(self.container, text="Click login to fix the ownership error",
-                                        font=("Arial", 12), text_color=self.muted,
+                                        font=("Arial", 11), text_color=self.muted,
                                         wraplength=460, justify="center")
-        self.action_text.pack(pady=(6, 2))
-
-        self.merged_label = ctk.CTkLabel(self.container, text="", font=("Arial", 12),
-                                         text_color="#59d499", wraplength=460, justify="center")
-        self.merged_label.pack(pady=(2, 0))
+        self.action_text.pack(pady=(2, 0))
 
         self.login_button = ctk.CTkButton(self.container, text="Login with itch.io",
                                           command=self.start_login_thread,
                                           fg_color=self.purple, hover_color=self.purple_dark,
-                                          font=("Arial", 14, "bold"), height=40)
-        self.login_button.pack(pady=(14, 4), padx=60, fill="x")
+                                          font=("Arial", 13, "bold"), height=38)
+        self.login_button.pack(pady=(8, 2), padx=30, fill="x")
 
     def build_merge_section(self):
         self.merge_section = ctk.CTkFrame(self.container, fg_color="transparent")
 
         divider = ctk.CTkFrame(self.merge_section, height=2, fg_color="#333333")
-        divider.pack(fill="x", padx=40, pady=(16, 8))
+        divider.pack(fill="x", padx=24, pady=(10, 6))
 
         title_row = ctk.CTkFrame(self.merge_section, fg_color="transparent")
         title_row.pack(fill="x")
         ctk.CTkLabel(title_row, text="MERGE YOUR ACCOUNT AS", font=("JetBrains Mono", 11, "bold"),
-                     text_color="#bbbbbb").pack(side="left", padx=50)
+                     text_color="#bbbbbb").pack(side="left", padx=30)
         ctk.CTkButton(title_row, text="?", width=24, height=24, corner_radius=12,
                       command=self.show_help_popup, fg_color="#33334a",
-                      hover_color=self.purple_dark, font=("Arial", 12, "bold")).pack(side="right", padx=50)
+                      hover_color=self.purple_dark, font=("Arial", 12, "bold")).pack(side="right", padx=30)
 
         btn_row = ctk.CTkFrame(self.merge_section, fg_color="transparent")
-        btn_row.pack(fill="x", pady=(8, 2))
+        btn_row.pack(fill="x", pady=(6, 2))
         self.primary_btn = ctk.CTkButton(btn_row, text="Primary", command=self.merge_as_primary,
                                          fg_color=self.purple, hover_color=self.purple_dark,
-                                         font=("Arial", 13, "bold"), height=36)
-        self.primary_btn.pack(side="left", padx=(60, 5), expand=True, fill="x")
+                                         font=("Arial", 13, "bold"), height=34)
+        self.primary_btn.pack(side="left", padx=(30, 4), expand=True, fill="x")
         self.secondary_btn = ctk.CTkButton(btn_row, text="Secondary", command=self.merge_as_secondary,
                                            fg_color=self.green, hover_color="#2f9c66",
-                                           font=("Arial", 13, "bold"), height=36)
-        self.secondary_btn.pack(side="left", padx=(5, 60), expand=True, fill="x")
+                                           font=("Arial", 13, "bold"), height=34)
+        self.secondary_btn.pack(side="left", padx=(4, 30), expand=True, fill="x")
 
         self.merge_hint = ctk.CTkLabel(self.merge_section, text="", font=("Arial", 11),
                                        text_color="#9a9a9a", wraplength=440, justify="center")
         self.merge_hint.pack(pady=(2, 0))
 
         unlink_row = ctk.CTkFrame(self.merge_section, fg_color="transparent")
-        unlink_row.pack(fill="x", pady=(12, 2))
+        unlink_row.pack(fill="x", pady=(8, 0))
         self.unlink_btn = ctk.CTkButton(unlink_row, text="Unlink itch.io", command=self.show_unlink_popup,
                                         fg_color="#6b1d1d", hover_color="#992626",
-                                        font=("Arial", 12, "bold"), height=32)
-        self.unlink_btn.pack(padx=120, fill="x")
+                                        font=("Arial", 12, "bold"), height=30)
+        self.unlink_btn.pack(padx=110, fill="x")
 
         self.merge_section.pack_forget()
 
@@ -369,10 +376,10 @@ class ItchFixerApp(ctk.CTk):
         self.warning_label = ctk.CTkLabel(self.container,
                                           text="This is a temporary fix, don't expect it to always work.",
                                           font=("Arial", 11, "italic"), text_color="#909090")
-        self.warning_label.pack(pady=(14, 4))
+        self.warning_label.pack(pady=(10, 2))
 
         socials = ctk.CTkFrame(self.container, fg_color="transparent")
-        socials.pack(pady=(2, 16))
+        socials.pack(pady=(2, 10))
         try:
             img = embedded_image(DISCORD_PNG_B64)
             self._discord_img = ctk.CTkImage(light_image=img, dark_image=img, size=(26, 26))
@@ -503,7 +510,7 @@ class ItchFixerApp(ctk.CTk):
             except Exception:
                 img = None
         if img is not None:
-            self._pfp_img = ctk.CTkImage(light_image=img, dark_image=img, size=(120, 120))
+            self._pfp_img = ctk.CTkImage(light_image=img, dark_image=img, size=(80, 80))
             self.after(0, lambda: self.pfp_label.configure(image=self._pfp_img, text=""))
 
     # ---------- help ----------
