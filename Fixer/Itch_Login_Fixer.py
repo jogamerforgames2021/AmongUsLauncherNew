@@ -18,8 +18,8 @@ DISCORD_PNG_B64 = "UklGRl4QAABXRUJQVlA4TFIQAAAv/8F/EG+goG0bJvwRdzc0FLRtw4Q/4u5GQ
 def embedded_image(b64):
     return Image.open(io.BytesIO(base64.b64decode(b64)))
 
-APP_VERSION = "v1.1"
-APP_DATE = "8/22/2026"
+APP_VERSION = "v1.2"
+APP_DATE = "11/5/2026"
 
 CLIENT_ID = "1ba9b4bfa1ac7759e8420eed4ec863ba"
 PORT = 7890
@@ -30,7 +30,10 @@ ASSET_DIR = os.path.dirname(os.path.abspath(__file__))
 
 ACCOUNT_MANAGEMENT_URL = "https://accounts.innersloth.com/account-management"
 EOS_AUTH_URL = "https://accounts.innersloth.com/eos-auth"
+EOS_UNLINK_URL = "https://accounts.innersloth.com/eos-unlink"
 BACKEND_API = "https://backend.innersloth.com/api"
+
+UPDATE_URL = "https://raw.githubusercontent.com/jogamerforgames2021/AmongUsLauncherNew/main/Fixer/latest.txt"
 
 BACKEND_HEADERS = {
     "Accept": "application/vnd.api+json",
@@ -38,7 +41,7 @@ BACKEND_HEADERS = {
     "Referer": "https://accounts.innersloth.com/",
 }
 
-STORES = ["steam", "epic", "microsoft", "itchio"]
+STORES = ["steam", "epic", "microsoft", "google", "apple", "itchio"]
 
 PLATFORM_LABELS = {
     'itchio': 'itch.io', 'itch': 'itch.io',
@@ -50,6 +53,7 @@ PLATFORM_LABELS = {
     'nintendo': 'Nintendo', 'switch': 'Nintendo Switch',
     'ios': 'iOS', 'android': 'Android',
     'google': 'Google Play', 'googleplay': 'Google Play',
+    'apple': 'Apple',
 }
 
 
@@ -57,8 +61,11 @@ def platform_label(p):
     return PLATFORM_LABELS.get(str(p).lower(), str(p)) if p else "?"
 
 
-def eos_auth(store, token):
-    r = requests.get(EOS_AUTH_URL, params={"store": store, "token": token},
+def eos_auth(store, token, extra=None):
+    params = {"store": store, "token": token}
+    if extra:
+        params.update(extra)
+    r = requests.get(EOS_AUTH_URL, params=params,
                      headers={"Accept": "application/json"}, timeout=20)
     if r.status_code != 200:
         raise RuntimeError(f"auth failed ({r.status_code}): {r.text[:150]}")
@@ -73,6 +80,9 @@ def query_primary(eos):
                      params={"access_token": eos["token"]},
                      headers={"Authorization": "Bearer " + eos["id_token"], **BACKEND_HEADERS},
                      timeout=20)
+    if r.status_code == 404:
+        raise RuntimeError("That account has never played Among Us (404). Launch the game once on that "
+                           "platform so the account gets created, then try again.")
     if r.status_code != 200:
         raise RuntimeError(f"account query failed ({r.status_code})")
     return r.json().get("data", {})
@@ -122,37 +132,62 @@ def do_merge(primary_eos, secondary_eos, secondary_store, secondary_platform_tok
 
 def parse_credentials(text):
     text = (text or "").strip().strip('"').strip("'")
-    store, token = None, None
     if not text:
         raise ValueError("Paste your account link or token first.")
+    out = {"store": None, "token": None, "name": None, "userhash": None}
     if "access_token=" in text:
-        token = text.split("access_token=")[1].split("&")[0].split("#")[0]
-        if "store=" in text:
-            store = text.split("store=")[1].split("&")[0].split("#")[0]
+        out["token"] = text.split("access_token=")[1].split("&")[0].split("#")[0]
     elif "token=" in text:
-        token = text.split("token=")[1].split("&")[0].split("#")[0]
-        if "store=" in text:
-            store = text.split("store=")[1].split("&")[0].split("#")[0]
+        out["token"] = text.split("token=")[1].split("&")[0].split("#")[0]
     elif len(text.split()) == 1 and len(text) > 20:
-        token = text
-    else:
+        out["token"] = text
+    if not out["token"]:
         raise ValueError("Couldn't find a token in what you pasted.")
-    if not token:
-        raise ValueError("Couldn't find a token in what you pasted.")
-    if store not in STORES:
-        store = None
-    return store, token
+    if "store=" in text:
+        s = text.split("store=")[1].split("&")[0].split("#")[0]
+        if s in STORES:
+            out["store"] = s
+    if "name=" in text:
+        out["name"] = urllib.parse.unquote_plus(text.split("name=")[1].split("&")[0])
+    if "userhash=" in text:
+        out["userhash"] = text.split("userhash=")[1].split("&")[0].split("#")[0]
+    return out
 
 
-def detect_store_for_token(token):
+def unlink_platform(eos):
+    r = requests.get(EOS_UNLINK_URL, params={"token": eos["token"]},
+                     headers={"Accept": "application/json"}, timeout=20)
+    if r.status_code != 200:
+        raise RuntimeError(f"unlink failed ({r.status_code}): {r.text[:150]}")
+    return True
+
+
+def check_update():
+    try:
+        r = requests.get(UPDATE_URL, timeout=8)
+        if r.status_code == 200:
+            latest = r.text.strip().splitlines()[0].strip()
+            if latest and latest != APP_VERSION:
+                return latest
+    except Exception:
+        pass
+    return None
+
+
+def detect_store_for_token(token, extra=None):
     last_err = None
-    for store in ["steam", "epic", "microsoft"]:
+    for store in ["steam", "epic", "microsoft", "google", "apple", "itchio"]:
         try:
-            eos_auth(store, token)
+            eos_auth(store, token, extra)
             return store
         except Exception as e:
             last_err = e
-    raise RuntimeError("That token didn't work with Steam, Epic or Microsoft.")
+    hint = "That token didn't work with any platform."
+    if last_err is not None and "400" in str(last_err):
+        hint += ("\n\nIf this is a Microsoft or Google link, it's probably already used up. "
+                 "Those links only work ONCE, right after the game opens them. Launch Among Us again, "
+                 "copy the link straight away and paste it here without opening it in your browser first.")
+    raise RuntimeError(hint)
 
 
 LOADING_PAGE = b"""<!DOCTYPE html>
@@ -244,14 +279,26 @@ class ItchFixerApp(ctk.CTk):
         self.build_footer()
 
         self.check_existing_login()
+        threading.Thread(target=self.run_update_check, daemon=True).start()
+
+    def run_update_check(self):
+        latest = check_update()
+        if latest:
+            self.after(0, lambda: self.update_label.configure(
+                text=f"⬆ Version {latest} is out (you have {APP_VERSION}). Get it from the Discord!",
+                text_color="#ffc857"))
 
     def build_header(self):
         top = ctk.CTkFrame(self.container, fg_color="transparent")
         top.pack(fill="x", pady=(4, 0))
         ctk.CTkLabel(top, text="SHADOWSLIME AUTH", font=("JetBrains Mono", 10),
                      text_color=self.purple).pack(side="left", padx=15)
-        ctk.CTkLabel(top, text=f"{APP_VERSION} | {APP_DATE}", font=("JetBrains Mono", 9),
-                     text_color="#444444").pack(side="right", padx=15)
+        ctk.CTkLabel(top, text=f"{APP_VERSION} | {APP_DATE}", font=("JetBrains Mono", 10),
+                     text_color="#9a9a9a").pack(side="right", padx=15)
+
+        self.update_label = ctk.CTkLabel(self.container, text="", font=("Arial", 12, "bold"),
+                                         wraplength=460, justify="center")
+        self.update_label.pack(pady=(6, 0))
 
     def build_profile(self):
         self.pfp_label = ctk.CTkLabel(self.container, text="", width=120, height=120)
@@ -306,15 +353,22 @@ class ItchFixerApp(ctk.CTk):
         self.secondary_btn.pack(side="left", padx=(5, 60), expand=True, fill="x")
 
         self.merge_hint = ctk.CTkLabel(self.merge_section, text="", font=("Arial", 11),
-                                       text_color="#666666", wraplength=440, justify="center")
+                                       text_color="#9a9a9a", wraplength=440, justify="center")
         self.merge_hint.pack(pady=(2, 0))
+
+        unlink_row = ctk.CTkFrame(self.merge_section, fg_color="transparent")
+        unlink_row.pack(fill="x", pady=(12, 2))
+        self.unlink_btn = ctk.CTkButton(unlink_row, text="Unlink itch.io", command=self.show_unlink_popup,
+                                        fg_color="#6b1d1d", hover_color="#992626",
+                                        font=("Arial", 12, "bold"), height=32)
+        self.unlink_btn.pack(padx=120, fill="x")
 
         self.merge_section.pack_forget()
 
     def build_footer(self):
         self.warning_label = ctk.CTkLabel(self.container,
                                           text="This is a temporary fix, don't expect it to always work.",
-                                          font=("Arial", 11, "italic"), text_color="#555555")
+                                          font=("Arial", 11, "italic"), text_color="#909090")
         self.warning_label.pack(pady=(14, 4))
 
         socials = ctk.CTkFrame(self.container, fg_color="transparent")
@@ -342,6 +396,8 @@ class ItchFixerApp(ctk.CTk):
             self.primary_btn.configure(state=state)
             self.secondary_btn.configure(state=state)
             self.login_button.configure(state=state)
+            if hasattr(self, "unlink_btn"):
+                self.unlink_btn.configure(state=state)
         self.after(0, apply)
 
     # ---------- login ----------
@@ -489,6 +545,84 @@ class ItchFixerApp(ctk.CTk):
         ctk.CTkButton(scroll, text="Got it!", command=win.destroy, fg_color=self.purple,
                       hover_color=self.purple_dark, width=120).pack(pady=10)
 
+    # ---------- unlink ----------
+    def show_unlink_popup(self):
+        if self.busy or not self.token:
+            return
+        win = ctk.CTkToplevel(self)
+        win.title("Unlink itch.io")
+        win.geometry("600x540")
+        win.minsize(560, 500)
+        win.attributes("-topmost", True)
+        win.grab_set()
+
+        wrap = ctk.CTkFrame(win, fg_color="transparent")
+        wrap.pack(fill="both", expand=True, padx=18, pady=14)
+
+        ctk.CTkLabel(wrap, text="Unlink itch.io account", font=("Arial", 17, "bold"),
+                     text_color=self.red).pack(anchor="w")
+
+        warn = ("\u26a0 READ THIS BEFORE YOU CLICK ANYTHING\n\n"
+                "When you MERGE, your existing data on your itch.io Among Us account gets wiped "
+                "(replaced by your main account's data).\n\n"
+                "When you UNLINK that same itch.io Among Us account from a merged account, ALL the "
+                "data on the itch.io side gets deleted. There is no undo.\n\n"
+                "To get itch.io data again after unlinking you have to start from zero: open Among Us, "
+                "set a birthdate, make a fresh account, and only THEN can it be merged again.\n\n"
+                "Your main account on other platforms (Steam, Microsoft, Google, Epic...) is NOT touched. "
+                "Only the itch.io side gets wiped.")
+        ctk.CTkLabel(wrap, text=warn, font=("Arial", 12), text_color="#e8e8e8",
+                     wraplength=550, justify="left").pack(anchor="w", pady=(10, 6))
+
+        status = ctk.CTkLabel(wrap, text="", font=("Arial", 12), wraplength=550, justify="left")
+        status.pack(anchor="w", pady=(8, 4))
+
+        rowf = ctk.CTkFrame(wrap, fg_color="transparent")
+        rowf.pack(pady=(10, 0))
+        confirm_btn = ctk.CTkButton(rowf, text="Yes, unlink it", width=140, height=36,
+                                    fg_color=self.red, hover_color="#c23030",
+                                    font=("Arial", 13, "bold"))
+
+        def go():
+            confirm_btn.configure(state="disabled")
+            self.run_unlink(win, status, confirm_btn)
+
+        confirm_btn.configure(command=go)
+        confirm_btn.pack(side="left", padx=8)
+        ctk.CTkButton(rowf, text="Cancel", width=110, height=36,
+                      fg_color="#33333d", hover_color="#44444f",
+                      command=win.destroy).pack(side="left", padx=8)
+
+    def run_unlink(self, win, status, confirm_btn):
+        def worker():
+            self.set_busy(True)
+            try:
+                self.after(0, lambda: status.configure(text="Getting a fresh itch.io token...",
+                                                       text_color="#bbbbbb"))
+                eos = eos_auth("itchio", self.token)
+
+                self.after(0, lambda: status.configure(
+                    text="Unlinking... this wipes the itch.io side. Give it a few seconds...",
+                    text_color="#bbbbbb"))
+                unlink_platform(eos)
+
+                def done():
+                    status.configure(text="\u2714 Unlinked! The itch.io side is gone. Click Refresh Session "
+                                          "to see the fresh state.", text_color=self.green)
+                    self.set_busy(False)
+                    threading.Thread(target=self.load_account, args=(self.token,), daemon=True).start()
+                    if win.winfo_exists():
+                        win.after(2500, win.destroy)
+                self.after(0, done)
+            except Exception as e:
+                msg = str(e)[:200]
+                def err():
+                    status.configure(text=f"\u2717 {msg}", text_color=self.red)
+                    confirm_btn.configure(state="normal")
+                    self.set_busy(False)
+                self.after(0, err)
+        threading.Thread(target=worker, daemon=True).start()
+
     # ---------- merge: PRIMARY ----------
     def merge_as_primary(self):
         """Opens Innersloth's official account page logged in as this itch.io account,
@@ -506,10 +640,14 @@ class ItchFixerApp(ctk.CTk):
         if self.busy or not self.token:
             return
         subtitle = ("Paste the link (or just the token) of your MAIN account, the one that already has "
-                    "your progress, stars and cosmetics. The platform gets detected automatically.\n\n"
+                    "your progress, stars and cosmetics. Steam, Epic, Microsoft, Google Play and Apple all work, "
+                    "the platform gets detected automatically.\n\n"
                     "How to get it: launch Among Us on that platform. When the browser opens "
                     "accounts.innersloth.com, copy the full URL from the address bar, something like:\n"
-                    "https://accounts.innersloth.com/account-management?store=steam&token=YOUR_TOKEN")
+                    "https://accounts.innersloth.com/account-management?store=steam&token=YOUR_TOKEN\n\n"
+                    "\u26a0 Microsoft and Google links only work ONCE, right after the game opens them. "
+                    "If you waited around or the page already loaded in your browser, launch the game again "
+                    "and grab a fresh one.")
         win = ctk.CTkToplevel(self)
         win.title("Merge as Secondary")
         win.geometry("620x470")
@@ -543,44 +681,58 @@ class ItchFixerApp(ctk.CTk):
         def submit():
             raw = cred_box.get("1.0", "end")
             try:
-                s, t = parse_credentials(raw)
-                if s == "itchio":
+                parsed = parse_credentials(raw)
+                if parsed["store"] == "itchio":
                     status.configure(text="That's an itch.io link. Paste your main account here "
-                                          "(Steam, Epic or Microsoft), not itch.io.", text_color=self.red)
+                                          "(Steam, Epic, Microsoft, Google Play or Apple), not itch.io.", text_color=self.red)
                     return
             except ValueError as ve:
                 status.configure(text=str(ve), text_color=self.red)
                 return
             go.configure(state="disabled")
-            self.run_secondary_merge(win, s, t, status, go)
+            self.run_secondary_merge(win, parsed, status, go)
 
         go.configure(command=submit)
         go.pack(pady=(6, 0))
 
-    def run_secondary_merge(self, win, main_store, main_token, status, go_button):
+    def run_secondary_merge(self, win, parsed, status, go_button):
         evt = threading.Event()
         confirmed = {"ok": False}
 
         def worker():
-            nonlocal main_store
             try:
                 self.after(0, lambda: status.configure(text="Authenticating itch.io...", text_color="#bbbbbb"))
                 itch_eos = eos_auth("itchio", self.token)
-                itch_primary = query_primary(itch_eos)
 
-                if main_store is None:
+                store = parsed["store"]
+                if store is None:
                     self.after(0, lambda: status.configure(text="Detecting your main account's platform...",
                                                            text_color="#bbbbbb"))
+                    extra = {}
+                    if parsed["name"]:
+                        extra["name"] = parsed["name"]
+                    if parsed["userhash"]:
+                        extra["userhash"] = parsed["userhash"]
                     try:
-                        main_store = detect_store_for_token(main_token)
+                        store = detect_store_for_token(parsed["token"], extra)
                     except Exception as e:
                         msg = str(e) or "That token didn't work."
                         self.after(0, lambda m=msg: status.configure(text=m, text_color=self.red))
                         return
+                    if store == "itchio":
+                        self.after(0, lambda: status.configure(
+                            text="That looks like an itch.io token. Paste your main account here "
+                                 "(Steam, Epic, Microsoft, Google Play or Apple), not itch.io.", text_color=self.red))
+                        return
 
-                self.after(0, lambda s=main_store: status.configure(
+                self.after(0, lambda s=store: status.configure(
                     text=f"Checking your {platform_label(s)} account...", text_color="#bbbbbb"))
-                main_eos = eos_auth(main_store, main_token)
+                extra = {}
+                if parsed["name"]:
+                    extra["name"] = parsed["name"]
+                if parsed["userhash"]:
+                    extra["userhash"] = parsed["userhash"]
+                main_eos = eos_auth(store, parsed["token"], extra or None)
                 main_data = query_primary(main_eos)
 
                 if "itchio" in (main_data.get("platforms") or []):
@@ -591,7 +743,7 @@ class ItchFixerApp(ctk.CTk):
                 self.after(0, lambda: status.configure(text="Validating itch.io side...", text_color="#bbbbbb"))
                 query_secondary(itch_eos, main_data.get("puid"))
 
-                main_plat = platform_label(main_data.get("platform") or main_store)
+                main_plat = platform_label(main_data.get("platform") or store)
                 summary = f"{main_plat} (main, keeps everything)\n\u2193\nitch.io (receives the data)"
 
                 def ask():
