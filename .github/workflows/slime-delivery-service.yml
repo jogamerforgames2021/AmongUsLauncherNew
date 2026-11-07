@@ -1,0 +1,275 @@
+name: Slime Delivery Service
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "version for this run (becomes the release tag AND the v number in the bat)"
+        type: string
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: slime-delivery
+  cancel-in-progress: false
+
+env:
+  ZIP_DICT: 256m
+  ZIP_WORDS: "273"
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 180
+    env:
+      VER: ${{ inputs.version }}
+      SZ: /c/Program Files/7-Zip/7z.exe
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: make sure the version you typed won't break anything
+        shell: python
+        run: |
+          import os, re, sys
+
+          ver = os.environ["VER"].strip()
+          if not ver:
+              sys.exit("you left the version box empty, it has to be something")
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", ver):
+              sys.exit(
+                  f"version looks weird ({ver!r}). spaces and most symbols aren't allowed "
+                  "because it has to work as a release tag and inside a bat file. "
+                  "letter/number first, then letters, numbers, dots, dashes or underscores."
+              )
+
+          with open(os.environ["GITHUB_ENV"], "a") as f:
+              f.write(f"VER={ver}\n")
+          print("going with", ver)
+
+      - uses: actions/checkout@v4
+
+      - name: ask the api where the build is
+        shell: python
+        env:
+          STUPID_LINK: ${{ secrets.StupidDownloadlink }}
+        run: |
+          import json, os, sys, urllib.error, urllib.request
+
+          req = urllib.request.Request(
+              os.environ["STUPID_LINK"].strip(),
+              headers={"User-Agent": "Mozilla/5.0", "Accept": "application/json"},
+          )
+          try:
+              with urllib.request.urlopen(req, timeout=60) as r:
+                  body = r.read().decode("utf-8")
+          except urllib.error.HTTPError as e:
+              sys.exit(f"endpoint said no (http {e.code})")
+          except Exception as e:
+              sys.exit(f"couldn't reach the endpoint ({type(e).__name__})")
+
+          try:
+              data = json.loads(body)
+          except ValueError:
+              sys.exit("endpoint didn't send json back")
+
+          dl = data.get("download_url")
+          if not data.get("ok") or not dl:
+              sys.exit(f"endpoint answered but there's no download link (ok={data.get('ok')})")
+
+          print("::add-mask::" + str(dl))
+          if data.get("key"):
+              print("::add-mask::" + str(data["key"]))
+
+          print("itch says:", data.get("version"), "|", data.get("timestamp"))
+          print("api calls left in this window:", (data.get("rate") or {}).get("remaining"))
+
+          with open(os.environ["GITHUB_ENV"], "a") as f:
+              f.write("DL_URL=" + str(dl) + "\n")
+
+      - name: download the game
+        run: |
+          curl -fL -sS --retry 4 --retry-delay 15 --retry-all-errors -o payload.bin "$DL_URL"
+          bytes=$(stat -c %s payload.bin)
+          echo "got $((bytes / 1048576)) MB"
+          if [ "$bytes" -lt 52428800 ]; then
+            echo "that's way too small to be the game, probably an error page"
+            exit 1
+          fi
+
+      - name: open it up (zip, rar, whatever it is)
+        run: |
+          "$SZ" x payload.bin -oraw -y > "$RUNNER_TEMP/unpack.log" || { tail -n 15 "$RUNNER_TEMP/unpack.log"; exit 1; }
+          rm payload.bin
+          echo "unpacked"
+
+      - name: find the folder with Among Us.exe
+        shell: python
+        run: |
+          import os, sys
+
+          hits = []
+          for root, dirs, files in os.walk("raw"):
+              if any(f.lower() == "among us.exe" for f in files):
+                  hits.append(root)
+          if not hits:
+              sys.exit("no Among Us.exe anywhere inside that download")
+
+          hits.sort(key=lambda p: p.count(os.sep))
+          game = os.path.abspath(hits[0])
+          if len(hits) > 1:
+              print(f"found {len(hits)} folders with the exe, taking the shallowest")
+
+          meta = os.path.join(game, "Among Us_Data", "il2cpp_data", "Metadata", "global-metadata.dat")
+          if not os.path.isfile(meta):
+              meta = None
+              for root, dirs, files in os.walk(game):
+                  if "global-metadata.dat" in files:
+                      meta = os.path.join(root, "global-metadata.dat")
+                      break
+          if not meta:
+              sys.exit("couldn't find global-metadata.dat in the game folder")
+
+          print("game folder:", os.path.relpath(game, "raw"))
+          print("metadata:", os.path.relpath(meta, game))
+
+          with open(os.environ["GITHUB_ENV"], "a") as f:
+              f.write("GAME_DIR=" + game.replace("\\", "/") + "\n")
+              f.write("META_FILE=" + meta.replace("\\", "/") + "\n")
+              f.write("META_REL=" + os.path.relpath(meta, game).replace("\\", "/") + "\n")
+
+      - name: swap the login link in the metadata
+        shell: python
+        env:
+          REAL_SERVER: ${{ secrets.RealServeromgomg }}
+        run: |
+          import filecmp, json, os, shutil, struct, sys
+
+          sys.path.insert(0, "il2cpp-stringliteral-patcher-master")
+          from core.extractor import StringLiteralExtractor
+          from core.patcher import StringLiteralPatcher
+
+          new_link = os.environ["REAL_SERVER"].strip()
+          if not new_link:
+              sys.exit("the login link secret is empty")
+
+          live = os.environ["META_FILE"]
+          folder = os.path.dirname(live)
+          vanilla = os.path.join(folder, "global-metadata.dat.vanilla")
+          patched = os.path.join(folder, "global-metadata.dat.patched")
+
+          os.replace(live, vanilla)
+
+          found = [
+              e["index"]
+              for e in StringLiteralExtractor(vanilla).extract().to_dict()
+              if e["value"].startswith("https://itch.io/user/oauth?") and "response_type=token" in e["value"]
+          ]
+          if len(found) != 1:
+              sys.exit(f"expected exactly one itch oauth string, found {len(found)}: {found}")
+          idx = found[0]
+          print("the login string is at index", idx, "this time")
+
+          patch_file = os.path.join(os.environ["RUNNER_TEMP"], "patch.json")
+          with open(patch_file, "w", encoding="utf-8") as f:
+              json.dump([{"index": idx, "value": new_link}], f, indent=2, ensure_ascii=False)
+
+          StringLiteralPatcher(vanilla, patch_file).update().patch(patched)
+          os.remove(patch_file)
+
+          def literals(path):
+              with open(path, "rb") as f:
+                  blob = f.read()
+              if blob[:4] != b"\xaf\x1b\xb1\xfa":
+                  sys.exit("not a metadata file: " + os.path.basename(path))
+              tab_off, tab_len, dat_off, _ = struct.unpack_from("<IIII", blob, 8)
+              out = []
+              for pos in range(tab_off, tab_off + tab_len, 8):
+                  length, start = struct.unpack_from("<II", blob, pos)
+                  out.append(blob[dat_off + start : dat_off + start + length])
+              return out
+
+          a, b = literals(vanilla), literals(patched)
+          if len(a) != len(b):
+              sys.exit("string count changed after patching")
+          bad = [i for i in range(len(a)) if i != idx and a[i] != b[i]]
+          if bad:
+              sys.exit(f"{len(bad)} other strings came out different, first few: {bad[:5]}")
+          if b[idx] != new_link.encode("utf-8"):
+              sys.exit("the patched string isn't what the secret says")
+          print("patch checks out, all", len(a), "strings are fine")
+
+          shutil.copy2(patched, live)
+          if not filecmp.cmp(patched, live, shallow=False):
+              sys.exit("copy of the patched file doesn't match")
+
+          v_size, p_size = os.path.getsize(vanilla), os.path.getsize(patched)
+          if p_size <= v_size:
+              sys.exit("patched file isn't bigger than vanilla, the bat can't tell them apart by size")
+          cut = v_size + (p_size - v_size) // 2
+          print(f"vanilla {v_size} bytes | patched {p_size} bytes | bat cutoff {cut}")
+
+          with open(os.environ["GITHUB_ENV"], "a") as f:
+              f.write(f"CUTOFF={cut}\n")
+
+      - name: write the new TogglePatch.bat
+        shell: python
+        run: |
+          import os, re, sys
+
+          ver, cut, game = os.environ["VER"], os.environ["CUTOFF"], os.environ["GAME_DIR"]
+
+          with open("TogglePatch.bat", "rb") as f:
+              text = f.read().decode("latin-1")
+
+          text, n1 = re.subn(
+              r"(PATCH TOGGLER \(For Among Us v)[^)\r\n]*(\))",
+              lambda m: m.group(1) + ver + m.group(2),
+              text,
+          )
+          text, n2 = re.subn(r"(if %SIZE% GTR )\d+", lambda m: m.group(1) + cut, text)
+          if n1 != 1 or n2 != 1:
+              sys.exit(f"TogglePatch.bat doesn't look like I expected (title hits {n1}, size hits {n2})")
+
+          text = text.replace("\r\n", "\n").replace("\n", "\r\n")
+          with open(os.path.join(game, "TogglePatch.bat"), "wb") as f:
+              f.write(text.encode("latin-1"))
+          print("bat says v" + ver + ", cutoff", cut)
+
+      - name: squish it into app.zip
+        run: |
+          cd "$GAME_DIR"
+          "$SZ" a -tzip -mm=LZMA -mx=9 -md="$ZIP_DICT" -mfb="$ZIP_WORDS" -mmt=2 "$GITHUB_WORKSPACE/app.zip" '*' > "$RUNNER_TEMP/zip.log" || { tail -n 20 "$RUNNER_TEMP/zip.log"; exit 1; }
+          tail -n 4 "$RUNNER_TEMP/zip.log"
+
+      - name: make sure the zip is good
+        run: |
+          "$SZ" t app.zip > "$RUNNER_TEMP/test.log" || { tail -n 20 "$RUNNER_TEMP/test.log"; exit 1; }
+          tail -n 3 "$RUNNER_TEMP/test.log"
+          python - <<'PY'
+          import os, sys, zipfile
+
+          size = os.path.getsize("app.zip")
+          print(f"app.zip is {size / 1048576:.0f} MB")
+          if size >= 2 * 1024**3:
+              sys.exit("over the 2 GB limit for a release file")
+
+          names = zipfile.ZipFile("app.zip").namelist()
+          need = ["Among Us.exe", "TogglePatch.bat", os.environ["META_REL"],
+                  os.environ["META_REL"] + ".vanilla", os.environ["META_REL"] + ".patched"]
+          missing = [n for n in need if n not in names]
+          if missing:
+              sys.exit(f"missing from the zip: {missing}")
+          print("exe and the patch files sit at the top level where they should")
+          PY
+
+      - name: publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$VER" > /dev/null 2>&1; then
+            gh release delete "$VER" --yes --cleanup-tag
+          fi
+          gh release create "$VER" app.zip --title "Among Us ($VER)" --notes ""
