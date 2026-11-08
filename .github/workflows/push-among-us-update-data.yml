@@ -1,0 +1,223 @@
+name: Push Among Us Update Data
+
+# manual button. picks which side of the version race moved and drags the
+# records along with it: BootstrapperTEST's AppDetail.json, both version.txt
+# files, and the bot's supabase bot_config row
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "the version"
+        type: string
+        required: true
+      target:
+        description: "what updated"
+        type: choice
+        required: true
+        default: "shadow slime / repo (our side updated)"
+        options:
+          - "shadow slime / repo (our side updated)"
+          - "innersloth / itch (their side updated)"
+      catch_up:
+        description: "(repo option only) the itch side was never left behind, catch it up too so everything matches"
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-among-us-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      VER: ${{ inputs.version }}
+      TARGET: ${{ inputs.target }}
+      CATCH_UP: ${{ inputs.catch_up }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: sanity-check what you picked
+        shell: python
+        run: |
+          import os, re, sys
+
+          ver = os.environ["VER"].strip()
+          if not ver:
+              sys.exit("you left the version box empty, it has to be something")
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", ver):
+              sys.exit(
+                  f"version looks weird ({ver!r}). spaces and most symbols aren't allowed "
+                  "because it gets written into json and files other software reads. "
+                  "letter/number first, then letters, numbers, dots, dashes or underscores."
+              )
+
+          repo_side = not os.environ["TARGET"].startswith("innersloth")
+          catch = os.environ["CATCH_UP"] == "true" and repo_side
+          if os.environ["CATCH_UP"] == "true" and not repo_side:
+              print("you ticked catch-up while on the innersloth option, that combination makes no sense so i ignored the tick")
+
+          if repo_side and catch:
+              print(f"everything gets dragged to {ver}")
+          elif repo_side:
+              print(f"our side moves to {ver}, itch side untouched")
+          else:
+              print(f"itch side moves to {ver}, our files untouched")
+
+          with open(os.environ["GITHUB_ENV"], "a") as f:
+              f.write(f"VER={ver}\n")
+              f.write(f"REPO_SIDE={'true' if repo_side else 'false'}\n")
+              f.write(f"CATCH={'true' if catch else 'false'}\n")
+              f.write("NEEDS_LAUNCHER_TXT=" + ("true" if repo_side or catch else "false") + "\n")
+              f.write("NEEDS_BOOT_TXT=" + ("true" if repo_side or catch else "false") + "\n")
+
+      - uses: actions/checkout@v4
+
+      - name: grab the bootstrapper repo with your key
+        uses: actions/checkout@v4
+        with:
+          repository: jogamerforgames2021/BootstrapperTEST
+          token: ${{ secrets.SlimeHandshake }}
+          path: bootstrapper
+
+      - name: rewrite AppDetail.json and (if it's our side) Version.txt
+        shell: python
+        run: |
+          import json, os
+
+          ver = os.environ["VER"]
+          repo_side = os.environ["REPO_SIDE"] == "true"
+          catch = os.environ["CATCH"] == "true"
+
+          appdetail = os.path.join("bootstrapper", "AppDetail.json")
+          with open(appdetail, encoding="utf-8-sig") as f:
+              d = json.load(f)
+
+          if repo_side:
+              d["repository_version"] = ver
+          if catch:
+              d["uploaded_version"] = ver
+
+          def write_json(path):
+              with open(path, "rb") as f:
+                  raw = f.read()
+              nl = "\r\n" if b"\r\n" in raw else "\n"
+              with open(path, "w", encoding="utf-8", newline="") as f:
+                  f.write(json.dumps(d, indent=2, ensure_ascii=False).replace("\n", nl) + nl)
+
+          write_json(appdetail)
+          print("AppDetail.json ->", json.dumps(d, ensure_ascii=False))
+
+          if os.environ["NEEDS_BOOT_TXT"] == "true":
+              vpath = os.path.join("bootstrapper", "Version.txt")
+              with open(vpath, encoding="utf-8-sig") as f:
+                  raw = f.read()
+              had_nl = raw.endswith("\n")
+              with open(vpath, "w", encoding="utf-8", newline="") as f:
+                  f.write(ver + ("\n" if had_nl else ""))
+              print("Version.txt ->", ver)
+
+      - name: launcher version.txt
+        if: env.NEEDS_LAUNCHER_TXT == 'true'
+        shell: python
+        run: |
+          import os
+
+          ver = os.environ["VER"]
+          path = "version.txt"
+          with open(path, encoding="utf-8-sig") as f:
+              raw = f.read()
+          had_nl = raw.endswith("\n")
+          with open(path, "w", encoding="utf-8", newline="") as f:
+              f.write(ver + ("\n" if had_nl else ""))
+          print("version.txt ->", ver)
+
+      - name: push the bootstrapper repo up to date
+        working-directory: bootstrapper
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          branch=$(git rev-parse --abbrev-ref HEAD)
+          git add AppDetail.json Version.txt
+          if git diff --cached --quiet; then
+            echo "bootstrapper already agrees, nothing to commit"
+          else
+            git commit -m "records say $VER now"
+            git pull --rebase --quiet origin "$branch" || git rebase --abort
+            git push origin "HEAD:$branch"
+          fi
+
+      - name: push version.txt up to date (this repo)
+        if: env.NEEDS_LAUNCHER_TXT == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add version.txt
+          if git diff --cached --quiet; then
+            echo "version.txt already agrees, nothing to commit"
+          else
+            git commit -m "launcher reports $VER now"
+            git pull --rebase --quiet origin "$GITHUB_REF_NAME" || git rebase --abort
+            git push origin "HEAD:$GITHUB_REF_NAME"
+          fi
+
+      - name: tell the bot's supabase the same story
+        shell: python
+        env:
+          SUPABASE_URL: ${{ secrets.SupabaseDoor }}
+          SUPABASE_KEY: ${{ secrets.SupabaseGodKey }}
+        run: |
+          import json, os, sys, urllib.request
+          from datetime import datetime, timezone
+
+          base = (os.environ["SUPABASE_URL"] or "").strip()
+          key = (os.environ["SUPABASE_KEY"] or "").strip()
+          if not base or not key:
+              sys.exit("supabase secrets are missing, add SupabaseDoor and SupabaseGodKey to the repo secrets")
+
+          ver = os.environ["VER"]
+          repo_side = os.environ["REPO_SIDE"] == "true"
+          catch = os.environ["CATCH"] == "true"
+
+          body = {"updated_at": datetime.now(timezone.utc).isoformat()}
+          if repo_side:
+              body["shadow_slime_version"] = ver
+          if catch:
+              body["innersloth_core_version"] = ver
+
+          url = base.rstrip("/") + "/rest/v1/bot_config?id=eq.1"
+          req = urllib.request.Request(
+              url,
+              data=json.dumps(body).encode("utf-8"),
+              method="PATCH",
+              headers={
+                  "apikey": key,
+                  "Authorization": "Bearer " + key,
+                  "Content-Type": "application/json",
+                  "Prefer": "return=representation",
+              },
+          )
+          try:
+              with urllib.request.urlopen(req, timeout=60) as r:
+                  rows = json.loads(r.read().decode("utf-8") or "[]")
+          except Exception as e:
+              detail = getattr(e, "read", lambda: b"")()
+              try:
+                  detail = detail.decode("utf-8")
+              except Exception:
+                  detail = ""
+              sys.exit(f"supabase said no ({type(e).__name__}) {detail[:400]}")
+
+          if not rows:
+              sys.exit("patch matched zero rows, bot_config with id=1 isn't there?")
+
+          row = rows[0]
+          print("supabase now has:")
+          print("  shadow_slime_version:", row.get("shadow_slime_version"))
+          print("  innersloth_core_version:", row.get("innersloth_core_version"))
