@@ -114,6 +114,10 @@ jobs:
           write_json(appdetail)
           print("AppDetail.json ->", json.dumps(d, ensure_ascii=False))
 
+          with open(os.environ["GITHUB_ENV"], "a") as f:
+              f.write("FINAL_REPO=" + str(d.get("repository_version", "")) + "\n")
+              f.write("FINAL_UPLOADED=" + str(d.get("uploaded_version", "")) + "\n")
+
           if os.environ["NEEDS_BOOT_TXT"] == "true":
               vpath = os.path.join("bootstrapper", "Version.txt")
               with open(vpath, encoding="utf-8-sig") as f:
@@ -185,6 +189,37 @@ jobs:
           repo_side = os.environ["REPO_SIDE"] == "true"
           catch = os.environ["CATCH"] == "true"
 
+          def rest_req(path, method="GET", data=None, params=None):
+              url = base.rstrip("/") + path
+              if params:
+                  url += "?" + params
+              req = urllib.request.Request(
+                  url,
+                  data=None if data is None else json.dumps(data).encode("utf-8"),
+                  method=method,
+                  headers={
+                      "apikey": key,
+                      "Authorization": "Bearer " + key,
+                      "Content-Type": "application/json",
+                      "Prefer": "return=representation",
+                  },
+              )
+              try:
+                  with urllib.request.urlopen(req, timeout=60) as r:
+                      return json.loads(r.read().decode("utf-8") or "[]")
+              except Exception as e:
+                  detail = getattr(e, "read", lambda: b"")()
+                  try:
+                      detail = detail.decode("utf-8")
+                  except Exception:
+                      detail = ""
+                  sys.exit(f"supabase said no ({method}, {type(e).__name__}) {detail[:400]}")
+
+          rows = rest_req("/rest/v1/bot_config", params="id=eq.1&select=status_key")
+          if not rows:
+              sys.exit("bot_config with id=1 isn't there?")
+          current_status = rows[0].get("status_key") or "operational"
+
           body = {"updated_at": datetime.now(timezone.utc).isoformat()}
           if repo_side:
               body["shadow_slime_version"] = ver
@@ -193,33 +228,22 @@ jobs:
           if catch:
               body["innersloth_core_version"] = ver
 
-          url = base.rstrip("/") + "/rest/v1/bot_config?id=eq.1"
-          req = urllib.request.Request(
-              url,
-              data=json.dumps(body).encode("utf-8"),
-              method="PATCH",
-              headers={
-                  "apikey": key,
-                  "Authorization": "Bearer " + key,
-                  "Content-Type": "application/json",
-                  "Prefer": "return=representation",
-              },
-          )
-          try:
-              with urllib.request.urlopen(req, timeout=60) as r:
-                  rows = json.loads(r.read().decode("utf-8") or "[]")
-          except Exception as e:
-              detail = getattr(e, "read", lambda: b"")()
-              try:
-                  detail = detail.decode("utf-8")
-              except Exception:
-                  detail = ""
-              sys.exit(f"supabase said no ({type(e).__name__}) {detail[:400]}")
+          current = current_status
+          fresh = os.environ["FINAL_REPO"].strip() == os.environ["FINAL_UPLOADED"].strip()
+          new_status = "operational" if fresh else "outdated"
+          if current in ("operational", "outdated"):
+              body["status_key"] = new_status
+              print("status is one of the auto ones, so I set it to", new_status)
+          else:
+              print(f"status is '{current}', which looks intentional, leaving it alone (new state would have been {new_status})")
 
-          if not rows:
+          patched = rest_req("/rest/v1/bot_config", method="PATCH", data=body, params="id=eq.1")
+
+          if not patched:
               sys.exit("patch matched zero rows, bot_config with id=1 isn't there?")
 
-          row = rows[0]
+          row = patched[0]
           print("supabase now has:")
           print("  shadow_slime_version:", row.get("shadow_slime_version"))
           print("  innersloth_core_version:", row.get("innersloth_core_version"))
+          print("  status_key:", row.get("status_key"))
