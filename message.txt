@@ -1,6 +1,0 @@
-⚠️ IMPORTANT WARNING ⚠️  
-Do NOT use the launcher’s uninstall option.  
-Uninstalling from the launcher will remove the entire folder where the game is installed, not just the game files.  
-If your game is in a main folder, you could lose important files.  
-
-👉 Please uninstall the game manually until the next update fixes this issue.
