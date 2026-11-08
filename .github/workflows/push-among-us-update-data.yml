@@ -101,7 +101,7 @@ jobs:
 
           if repo_side:
               d["repository_version"] = ver
-          if catch:
+          if catch or not repo_side:
               d["uploaded_version"] = ver
 
           def write_json(path):
@@ -188,6 +188,8 @@ jobs:
           body = {"updated_at": datetime.now(timezone.utc).isoformat()}
           if repo_side:
               body["shadow_slime_version"] = ver
+          else:
+              body["innersloth_core_version"] = ver
           if catch:
               body["innersloth_core_version"] = ver
 
