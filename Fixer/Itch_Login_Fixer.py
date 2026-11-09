@@ -1,9 +1,12 @@
 import os
+import platform
 import base64
 import threading
 import webbrowser
 import urllib.parse
 import requests
+import json
+from pathlib import Path
 import io
 import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
@@ -14,6 +17,43 @@ FROG_PNG_B64 = "iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAMAAABrrFhUAAAABGdBTUEAALGPC/xh
 
 DISCORD_PNG_B64 = "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"
 
+config_dir = Path.home() / ".config" / "shadow_slime" / "itch"
+config = config_dir / "config.json"
+
+class LinuxSetup():
+    def __init__(self, root):
+        super().__init__()
+        self.root = root
+        root.title("Main")
+        root.geometry("520x380")
+
+        self.title = ctk.CTkLabel(root, text="Linux Setup", font=ctk.CTkFont(family="Helvetica", size=13, weight="bold"), width=150, height=40)
+        self.title.place(x=180, y=10)
+
+        self.ok_btn = ctk.CTkButton(root, text="OK", command=self.on_ok_btn, width=96, height=32)
+        self.ok_btn.place(x=380, y=310)
+
+        self.wine_path = ctk.CTkEntry(root, width=150, height=28)
+        self.wine_path.place(x=270, y=190)
+
+        self.username = ctk.CTkEntry(root, width=150, height=28)
+        self.username.place(x=270, y=110)
+
+        self.username_label = ctk.CTkLabel(root, text="Linux Username", width=90, height=26)
+        self.username_label.place(x=155, y=110)
+
+        self.winepath_label = ctk.CTkLabel(root, text="Prefix path", width=90, height=26)
+        self.winepath_label.place(x=155, y=190)
+
+    def on_ok_btn(self):
+        wine = self.wine_path.get()
+        user = self.username.get()
+        config_data = {"prefix": wine, "user": user}
+        with open(config, "w") as f:
+            cfg_data = json.dump(config_data, f, indent=4)
+        root.destroy()
+        return cfg_data
+
 
 def embedded_image(b64):
     return Image.open(io.BytesIO(base64.b64decode(b64)))
@@ -23,7 +63,28 @@ APP_DATE = "11/5/2026"
 
 CLIENT_ID = "1ba9b4bfa1ac7759e8420eed4ec863ba"
 PORT = 7890
-LOCAL_LOW = os.path.join(os.environ['USERPROFILE'], 'AppData', 'LocalLow')
+
+os_name = platform.system()
+if os_name == "Linux":
+    if not config.exists():
+        config_dir.mkdir(parents=True, exist_ok=True)
+        config.touch()
+        ctk.set_appearance_mode("dark")
+        root = ctk.CTk()
+        app = LinuxSetup(root)
+        root.mainloop()
+    
+    with open(config, "r") as f:
+        linux_data = json.load(f)
+
+    USERNAME = linux_data["user"]
+    # WINE = f"/home/{USERNAME}/.wine/drive_c/users/{USERNAME}"
+    PREFIX = linux_data["prefix"]
+    WINE = os.path.join(PREFIX, 'drive_c', USERNAME)
+    LOCAL_LOW = os.path.join(WINE, 'AppData', 'LocalLow')
+else:
+    LOCAL_LOW = os.path.join(os.environ['USERPROFILE'], 'AppData', 'LocalLow')
+
 TARGET_DIR = os.path.join(LOCAL_LOW, 'Innersloth', 'Among Us')
 TARGET_FILE = os.path.join(TARGET_DIR, 'itch')
 ASSET_DIR = os.path.dirname(os.path.abspath(__file__))
